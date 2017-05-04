@@ -1,14 +1,8 @@
 import random
 from datetime import date
-import requests
-import pandas as pd
-
-
 #from __future__ import print_function
 
 class episode(object):
-    r=requests.get('https://tw.rter.info/capi.php')
-    currency=r.json()
     """docstring for episode."""
     def __init__(self, arg):
         #super(episode, self).__init__()
@@ -47,25 +41,12 @@ class episode(object):
         random_day = date.fromordinal(random.randint(start_date, end_date))
         return random_day
 # need real data 
-    print(currency)
-    kick = ['COPPERHIGHGRADE', 'GOLD1OZ', 'PALLADIUM1OZ', 'PLATINUM1UZ999', 'SILVER1OZ999NY']
-    Country = []
-    for a in currency:
-        if a in kick:
-            continue
-        elif a == 'USD':
-            Country.append(a)
-            continue
-        elif a.replace('USD','') == '':
-            continue
-        Country.append(a.replace('USD','')) 
-    Money_name = ['US dollar', 'Pound sterling', 'Japanese yen', 'Chinese yuan', 'Taiwan dollar']
-    x = pd.read_csv('data/20170102/symbols.csv', delimiter = '\t', names = ['fuck', 'you'])
-    company_name = x['you']
-    symbol = x['fuck']
-    field = ['date','open','high','low','close','volume','adj_close']     
-                    
-
+###################################################
+    Country = ["#value1","#value2","#value3"]     #
+    Money_name = ["#value", "#value2", "#value3"] #
+    field = ["#value1", "#value2", "#value3"]     #
+    symbol = ["qq","ww","ee"]                     #
+###################################################
     user_goal = ["Exchange","Query","Get_exchange_rate","USDX"]
     Exchange = {"country1":Country,"country2":Country}
     Query = {"symbol":symbol,"date":None,"field":field}
@@ -77,8 +58,3 @@ class episode(object):
     #diaact
 
 episode1 = episode(object)
-#print(episode1.Country)
-#print(episode1.Money_name)
-#print(episode1.company_name)
-#print(episode1.symbol)
-#print(episode1.field)
