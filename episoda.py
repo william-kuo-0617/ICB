@@ -15,6 +15,7 @@ class episode(object):
         self.goal = self.getgoal()
         self.request = episode.request[self.goal]
         self.start_date = None
+        self.comp_ind = None
         self.inform_slots = self.slots_fill_in(self.start_date)
         self.dump()
 
@@ -31,6 +32,9 @@ class episode(object):
                     self.start_date = tmp[slot]
             else:
                 j = random.randint(1,1000)%len(episode.slots[self.goal][slot])
+                if slot in ['symbol','company_name']:
+                    self.comp_ind = j if self.comp_ind is None else self.comp_ind
+                    j = self.comp_ind if self.comp_ind is not None else j
                 tmp[slot] = episode.slots[self.goal][slot][j]
         return tmp
 
@@ -47,7 +51,6 @@ class episode(object):
         random_day = date.fromordinal(random.randint(start_date, end_date))
         return random_day
 # need real data 
-    print(currency)
     kick = ['COPPERHIGHGRADE', 'GOLD1OZ', 'PALLADIUM1OZ', 'PLATINUM1UZ999', 'SILVER1OZ999NY']
     Country = []
     for a in currency:
@@ -59,7 +62,9 @@ class episode(object):
         elif a.replace('USD','') == '':
             continue
         Country.append(a.replace('USD','')) 
-    Money_name = ['US dollar', 'Pound sterling', 'Japanese yen', 'Chinese yuan', 'Taiwan dollar']
+    
+    Money_name = [ 'USD', 'HKD', 'GBP', 'AUD', 'CAD', 'SGD', 'CHF', 'JPY', 'ZAR', 'SEK', 'NZD', 'THB', 'PHP', 'IDR', 'EUR', 'KRW', 'VND', 'MYR', 'CNY']
+
     x = pd.read_csv('data/20170102/symbols.csv', delimiter = '\t', names = ['fuck', 'you'])
     company_name = x['you']
     symbol = x['fuck']
@@ -67,18 +72,16 @@ class episode(object):
                     
 
     user_goal = ["Exchange","Query","Get_exchange_rate","USDX"]
+    
     Exchange = {"country1":Country,"country2":Country}
-    Query = {"symbol":symbol,"date":None,"field":field}
+    Query = {"symbol":symbol,"company_name":company_name,"date":None,"field":field}
     USDX = {"time_start":None,"time_end":None}
-    Get_exchange_rate = {"Money_name": Money_name, "type":["spot","cash"], "buy":[0,1]}
+    Get_exchange_rate = {"Money_name": Money_name, "type":["spot","cash"], "buy":["buy","sell"]}
     slots = {"Exchange":Exchange, "Query":Query, "Get_exchange_rate":Get_exchange_rate,"USDX":USDX}
+    
     request = {"Exchange":("taiwan_rate","UNK"),"Query":("price_info","UNK"),"Get_exchange_rate":("ex_rate","UNK"),"USDX":("index","UNK")}
 
     #diaact
 
 episode1 = episode(object)
-#print(episode1.Country)
-#print(episode1.Money_name)
-#print(episode1.company_name)
-#print(episode1.symbol)
-#print(episode1.field)
+#import pdb;pdb.set_trace()
