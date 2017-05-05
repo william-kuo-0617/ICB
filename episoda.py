@@ -26,10 +26,10 @@ def initializer(episode1):
         init_temp.append(str("Please show me "+str(episode1.inform_slots['date'])+"'s "+episode1.inform_slots['company_name']+" stock price."))
         return random.choice(init_temp)
     elif episode1.goal == 'Get_exchange_rate':
-        init_temp = ["what's the exchange rate of "+episode1.inform_slots['buy']+" "+episode1.inform_slots['Money_name']+" by TWD now in bank with "+episode1.inform_slots['type']+"?\n", "I want to "+episode1.inform_slots['buy']+" some "+episode1.inform_slots['Money_name']+" with "+episode1.inform_slots['type']+"?\n"]
-        init_temp.append(str("I would like to "+episode1.inform_slots['buy']+" some "+episode1.inform_slots['Money_name']+"."))
-        init_temp.append(str("I'd like to "+episode1.inform_slots['buy']+" some "+episode1.inform_slots['Money_name']+"."))
-        init_temp.append(str("I want to "+episode1.inform_slots['buy']+" some "+episode1.inform_slots['Money_name']+"."))
+        init_temp = ["what's the exchange rate of "+episode1.inform_slots['action']+" "+episode1.inform_slots['Money_name']+" by TWD now in bank with "+episode1.inform_slots['type']+"?\n", "I want to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['Money_name']+" with "+episode1.inform_slots['type']+"?\n"]
+        init_temp.append(str("I would like to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['Money_name']+"."))
+        init_temp.append(str("I'd like to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['Money_name']+"."))
+        init_temp.append(str("I want to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['Money_name']+"."))
         init_temp.append(str("I want to exchange my "+episode1.inform_slots['Money_name']+"."))
         init_temp.append(str(""))
         return random.choice(init_temp)
@@ -120,7 +120,7 @@ class episode(object):
     Exchange = {"country1":Country,"country2":Country}
     Query = {"symbol":symbol,"company_name":company_name,"date":None,"field":field}
     USDX = {"time_start":None,"time_end":None}
-    Get_exchange_rate = {"Money_name": Money_name, "type":["spot","cash"], "buy":["buy","sell"]}
+    Get_exchange_rate = {"Money_name": Money_name, "type":["spot","cash"], "action":["buy","sell"]}
     slots = {"Exchange":Exchange, "Query":Query, "Get_exchange_rate":Get_exchange_rate,"USDX":USDX}
     
     request = {"Exchange":("taiwan_rate","UNK"),"Query":("price_info","UNK"),"Get_exchange_rate":("ex_rate","UNK"),"USDX":("index","UNK")}
