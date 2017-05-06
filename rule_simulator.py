@@ -18,7 +18,7 @@ class RuleSimulator(object):
         self.state['request_slots'] = {}
         self.state['rest_slots'] = []
         self.state['turn'] = 0
-        
+        self.reward = 0
         self.episode_over = False
         self.dialog_status = dialog_config.NO_OUTCOME_YET
         
@@ -77,7 +77,7 @@ class RuleSimulator(object):
             self.response_response(system_action)
         elif sys_act == "closing":
             self.episode_over = True
-            self.state['diaact'] = "thanks"
+            #self.state['diaact'] = "thanks"
 
         #self.corrupt(self.state)
         
@@ -104,8 +104,10 @@ class RuleSimulator(object):
                 error = 1
                 break
         if error
+            self.reward -= 10
             return random.choice(response)
         else
+            self.reward += 20
             response.append(str"Thanks!")
             return random.choice(response)
 
@@ -123,6 +125,7 @@ class RuleSimulator(object):
                 response.append(str("The exchange rate between "+self.goal.inform_slots['country1']+" and "+self.goal.inform_slots['country2']+"."))
                 response.append(str(self.goal.inform_slots['country1']+" and "+self.goal.inform_slots['country2']+"."))
                 response.append(str("Between "+self.goal.inform_slots['country1'][0]+" and "+self.goal.inform_slots['country2'][0]+"."))
+            self.reward -= 2
             return random.choice(response)
         elif self.goal.goal == 'Query':
             if system_action['action_item'][0] != 'query':
@@ -135,6 +138,7 @@ class RuleSimulator(object):
             elif: len(system_action['slot']) == 2:
                 response.append(str("l'd like to see "+str(self.goal.inform_slots['date'])+"'s "+self.goal.inform_slots['company_name']+" stock price."))
                 response.append(str("Please show me "+str(self.goal.inform_slots['date'])+"'s "+self.goal.inform_slots['company_name']+" stock price."))
+            self.reward -= 2
             return random.choice(response)
         elif self.goal.goal == 'Get_exchange_rate':
             if system_action['action_item'][0] != 'get_exchange_rate':
@@ -148,6 +152,7 @@ class RuleSimulator(object):
             elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'types':
                 response.append(str(self.goal.inform_slots['type']+", please."))
                 response.append(str("with "+self.goal.inform_slots['action']+"."))
+            self.reward -= 2
             return random.choice(response)
         elif self.goal.goal == 'USDX':
             if system_action['action_item'][0] != 'USDX':
@@ -165,6 +170,7 @@ class RuleSimulator(object):
             elif len(system_action['slot']) == 2:
                 response.append("From "+str(goal.inform_slots['time_start'])+" to "+str(self.goal.inform_slots['time_end'])+".")
                 response.append("Between "+str(goal.inform_slots['time_start'])+" and "+str(self.goal.inform_slots['time_end'])+".")
+            self.reward -= 2
             return random.choice(response)
     def response_inform(self,system_action):
         pass
