@@ -34,7 +34,11 @@ def run_an_episode():
 		slot,intent = nlu.predict(nl_input,system)
 		system.update(slot,intent,nl_input)
 		frame_output = system.reply()
-		turn_by_turn(currturn+1,frame_output,'system')
+		a = str(frame_output['system_action'][0])+"("
+		for i in frame_output['slot'].keys():
+			a.join(str(i)+',')
+		a.join(")")
+		turn_by_turn(currturn+1,a,'system')
 		currturn += 2
 		if currturn>= maxturn :
 			break
@@ -51,8 +55,14 @@ def run_an_episode():
 		print("Fail")
 		reward -= maxturn
 
-	return reward
+	return reward,user.success
 def turn_by_turn(currturn,turn,who):
 	print("turn{0} {1}:".format(currturn,who),turn)
 if __name__ == '__main__':
-	print (run_an_episode())
+	count = 1
+	succ = 0
+	for _ in range(30):
+		r,s = run_an_episode()
+		if s is True: succ+=1
+		print (r,'rate:\t',float(succ/count))
+		count+=1
