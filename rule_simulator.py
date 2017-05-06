@@ -107,8 +107,6 @@ class RuleSimulator(object):
         else
             response.append(str"Thanks!")
             return random.choice(response)
-    def response_closing(self,system_action):
-        
 
 
     def response_request(self,system_action):
