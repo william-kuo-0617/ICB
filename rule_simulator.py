@@ -69,7 +69,7 @@ class RuleSimulator(object):
             self.response_multiple_choice(system_action)
         elif sys_act == "request":
             self.response_request(system_action) 
-        elif sys_act == "thanks":
+        elif sys_act == "closing":
             self.response_thanks(system_action)
         elif sys_act == "confirm_answer":
             self.response_confirm_answer(system_action)
@@ -94,10 +94,20 @@ class RuleSimulator(object):
 
     def response_response(self, system_action):
         response = []
-        if system_action[''] != :
-            response.append(str(""))
-
-    def response_thanks(self,system_action):
+        error = 0
+        if system_action['action'][0] != self.goal.goal:
+            response.append(str("intent error"))
+        for i in system_action['slot']:
+            if self.goal.inform_slots.get(i) == None or self.goal.inform_slots.get(i) != system_aciton['slot'][i]
+                response.append(str("slot error with "+i+" "+self.goal.inform_slots.get(i)+" "+system_aciton['slot'][i]"."))
+                error = 1
+                break
+        if error
+            return random.choice(response)
+        else
+            response.append(str"Thanks!")
+            return random.choice(response)
+    def response_closing(self,system_action):
         
 
 
