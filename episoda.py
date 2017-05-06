@@ -119,7 +119,6 @@ class episode(object):
     
     request = {"exchange":("taiwan_rate","UNK"),"query":("price_info","UNK"),"get_exchange_rate":("ex_rate","UNK"),"USDX":("index","UNK")}
 
-    #diaact
 if __name__ == '__main__':
     for _ in range(100):
         episode1 = episode(object)

@@ -43,14 +43,15 @@ class RuleSimulator(object):
         error = 0
         if system_action['action_item'][0] != self.goal.goal:
             response.append(str("Thanks1"))
-            error = 1   
-        for i in system_action['slot']:
-            if self.goal.inform_slots.get(i) == None or self.goal.inform_slots.get(i) != system_action['slot'][i]:
-                response.append(str("Thanks2"))
-                #response.append(str("slot error with "+i+" "+self.goal.inform_slots.get(i)+" "+system_aciton['slot'][i]"."))
-                error = 1
-                break
-        if error:
+            error = 1
+        if error == 0:    
+            for i in system_action['slot']:
+                if self.goal.inform_slots.get(i) == None or self.goal.inform_slots.get(i) != system_action['slot'][i]:
+                    response.append(str("Thanks2"))
+                    #response.append(str("slot error with "+i+" "+self.goal.inform_slots.get(i)+" "+system_aciton['slot'][i]"."))
+                    error = 1
+                    break
+        if error==1:
             print ("ERROR!")
             self.episode_over = True
             return random.choice(response)
@@ -147,7 +148,7 @@ if __name__ == '__main__':
     r = RuleSimulator()
     r.goal.dump()
     tmp = {}
-    tmp['system_action'] = ["response"]
+    tmp['system_action'] = ['response']
     tmp['action_item'] = [r.goal.goal]
     tmp['slot'] = r.goal.inform_slots
     pprint(tmp)

@@ -18,8 +18,9 @@ def run_an_episode():
 
 	#user
 	user = RuleSimulator()
-	print "New episode, user goal:"
+	print ("New episode, user goal:")
 	user.goal.dump()
+	print('_ _ _ _ _ _ _ _ _ _ _ _')
 	over = user.episode_over
 	nl_input = initializer(user.goal)
 	turn_by_turn(currturn,nl_input,,)
