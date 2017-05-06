@@ -153,9 +153,9 @@ class RuleSimulator(object):
                 response.append(str("In "+self.goal.inform_slots['time_end']+"."))
                 response.append(str("The time period ends in "+self.goal.inform_slots['time_end']+"."))
                 response.append(str("Ends in" +self.goal.inform_slots['time_end']+"."))
-            elif: len(system_action['slot']) == 2:
+            elif len(system_action['slot']) == 2:
                 response.append("From "+goal.inform_slots['time_start']+" to "+self.goal.inform_slots['time_end']+".")
-                response.append("Between "+2017/01/02+" and " 2017/01/05".")
+                response.append("Between "+goal.inform_slots['time_start']+" and "+self.goal.inform_slots['time_end']+".")
             return random.choice(response)
     def response_inform(self,system_action):
         pass
