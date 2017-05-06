@@ -1,5 +1,6 @@
 from episoda import *
 import pdb
+from pprint import pprint
 class RuleSimulator(object):
     """docstring for RuleSimulator"""
     def __init__(self):
@@ -18,8 +19,8 @@ class RuleSimulator(object):
         self.episode_over = False
         
         ##get system action
-        sys_act = system_action['system_action']
-
+        sys_act = system_action['system_action'][0]
+        print(sys_act)
         nl_response = None
 
         if sys_act == "inform":
@@ -32,6 +33,7 @@ class RuleSimulator(object):
         elif sys_act == "response":
             nl_response = self.response_response(system_action)
         elif sys_act == "closing":
+            nl_response = None
             self.episode_over = True
                                
         return nl_response
@@ -39,21 +41,22 @@ class RuleSimulator(object):
     def response_response(self, system_action):
         response = []
         error = 0
-        if system_action['action'][0] != self.goal.goal:
-            response.append(str("Thanks"))
-            error = 1
+        if system_action['action_item'][0] != self.goal.goal:
+            response.append(str("Thanks1"))
+            error = 1   
         for i in system_action['slot']:
-            if self.goal.inform_slots.get(i) == None or self.goal.inform_slots.get(i) != system_aciton['slot'][i]:
-                response.append(str("Thanks"))
+            if self.goal.inform_slots.get(i) == None or self.goal.inform_slots.get(i) != system_action['slot'][i]:
+                response.append(str("Thanks2"))
                 #response.append(str("slot error with "+i+" "+self.goal.inform_slots.get(i)+" "+system_aciton['slot'][i]"."))
                 error = 1
                 break
         if error:
+            print ("ERROR!")
             self.episode_over = True
             return random.choice(response)
         else:
             self.success = True
-            response.append(str("Thanks!"))
+            response.append(str("Thanks3"))
             return random.choice(response)
 
 
@@ -118,8 +121,8 @@ class RuleSimulator(object):
                 response.append(str("The time period ends in "+str(self.goal.inform_slots['time_end'])+"."))
                 response.append(str("Ends in" +str(self.goal.inform_slots['time_end'])+"."))
             elif len(system_action['slot']) == 2:
-                response.append("From "+str(goal.inform_slots['time_start'])+" to "+str(self.goal.inform_slots['time_end'])+".")
-                response.append("Between "+str(goal.inform_slots['time_start'])+" and "+str(self.goal.inform_slots['time_end'])+".")
+                response.append("From "+str(self.goal.inform_slots['time_start'])+" to "+str(self.goal.inform_slots['time_end'])+".")
+                response.append("Between "+str(self.goal.inform_slots['time_start'])+" and "+str(self.goal.inform_slots['time_end'])+".")
 
             return random.choice(response)
     def response_inform(self,system_action):
@@ -142,4 +145,13 @@ class RuleSimulator(object):
 
 if __name__ == '__main__':
     r = RuleSimulator()
+    r.goal.dump()
+    tmp = {}
+    tmp['system_action'] = ["response"]
+    tmp['action_item'] = [r.goal.goal]
+    tmp['slot'] = r.goal.inform_slots
+    pprint(tmp)
+    print ("---------")
+    print (r.next(tmp))
+    print(r.success,r.episode_over)
     pdb.set_trace()

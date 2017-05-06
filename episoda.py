@@ -3,7 +3,6 @@ from datetime import date
 import requests
 import pandas as pd
 import json
-from bson import json_util
 #from __future__ import print_function
 def initializer(episode1):
     init_temp = []
@@ -53,7 +52,7 @@ class episode(object):
     def __init__(self, arg):
         #super(episode, self).__init__()
         self.goal = self.getgoal()
-        self.request_slots = episode.request[self.goal][0]
+        self.request_slots = episode.request[self.goal]
         self.start_date = None
         self.comp_ind = None
         self.inform_slots = self.slots_fill_in(self.start_date)
@@ -78,12 +77,12 @@ class episode(object):
         return tmp
 
     def dump(self):
-        print "{goal:",self.goal,"};"
+        print ("{goal:",self.goal,"};")
         print("{inform_slots:")
         for key,val in self.inform_slots.items():
             print("\t{0}: {1}".format(key,val))
         print("};")
-        print "{request_slot:\n","\t{0}:{1}\n".format(self.request_slots[0],self.request_slots[1]),"};"
+        print ("{request_slot:\n","\t{0}:{1}\n".format(self.request_slots[0],self.request_slots[1]),"};")
     def date_gen(self,start_date):
         start_date = self.start_date.toordinal() if self.start_date is not None else date.today().replace(day=1, month=1).toordinal()
         end_date = date.today().toordinal()
@@ -113,9 +112,9 @@ class episode(object):
     user_goal = ["exchange","query","get_exchange_rate","USDX"]
     
     exchange = {"country1":Country,"country2":Country}
-    query = {"symbol":symbol,"company_name":company_name,"date":None,"field":field}
+    query = {"symbol":symbol,"stock_name":company_name,"date":None,"field":field}
     USDX = {"time_start":None,"time_end":None}
-    get_exchange_rate = {"Money_name": Money_name, "type":["spot","cash"], "action":["buy","sell"]}
+    get_exchange_rate = {"money_name": Money_name, "types":["spot","cash"], "action":["buy","sell"]}
     slots = {"exchange":exchange, "query":query, "get_exchange_rate":get_exchange_rate,"USDX":USDX}
     
     request = {"exchange":("taiwan_rate","UNK"),"query":("price_info","UNK"),"get_exchange_rate":("ex_rate","UNK"),"USDX":("index","UNK")}
