@@ -18,8 +18,8 @@ class RuleSimulator(object):
         self.state['request_slots'] = {}
         self.state['rest_slots'] = []
         self.state['turn'] = 0
-        self.reward = 0
         self.episode_over = False
+        self.success = False
         self.dialog_status = dialog_config.NO_OUTCOME_YET
         
         self.goal = episode() #random generate a user goal
@@ -50,18 +50,14 @@ class RuleSimulator(object):
         self.episode_over = False
         self.dialog_status = dialog_config.NO_OUTCOME_YET
         
-        
         ##get system action
         sys_act = system_action['system_action']
 
 
-        # if (self.max_turn > 0 and self.state['turn'] > self.max_turn):
-        #     self.dialog_status = dialog_config.FAILED_DIALOG
-        #     self.episode_over = True
-        #     self.state['diaact'] = "closing"
-        # else:
+
         self.state['history_slots'].update(self.state['inform_slots'])
         self.state['inform_slots'].clear()
+
 
         if sys_act == "inform":
             self.response_inform(system_action)
@@ -81,13 +77,6 @@ class RuleSimulator(object):
 
         #self.corrupt(self.state)
         
-        response_action = {}
-        response_action['diaact'] = self.state['diaact']
-        response_action['inform_slots'] = self.state['inform_slots']
-        response_action['request_slots'] = self.state['request_slots']
-        response_action['turn'] = self.state['turn']
-        response_action['nl'] = ""
-        
         # add NL to dia_act
         self.add_nl_to_action(response_action)                       
         return response_action, self.episode_over, self.dialog_status
@@ -96,27 +85,30 @@ class RuleSimulator(object):
         response = []
         error = 0
         if system_action['action'][0] != self.goal.goal:
-            response.append(str("intent error"))
+            response.append(str("Thanks"))
             error = 1
         for i in system_action['slot']:
             if self.goal.inform_slots.get(i) == None or self.goal.inform_slots.get(i) != system_aciton['slot'][i]
-                response.append(str("slot error with "+i+" "+self.goal.inform_slots.get(i)+" "+system_aciton['slot'][i]"."))
+                response.append(str("Thanks"))
+                #response.append(str("slot error with "+i+" "+self.goal.inform_slots.get(i)+" "+system_aciton['slot'][i]"."))
                 error = 1
                 break
         if error
-            self.reward -= 10
+            self.episode_over = True
             return random.choice(response)
         else
-            self.reward += 20
-            response.append(str"Thanks!")
+            self.success = True
+            response.append(str("Thanks!"))
             return random.choice(response)
 
 
     def response_request(self,system_action):
         response = []
-        if self.goal.goal == 'Exchange':
+        if self.goal.goal == 'exchange':
             if system_action['action_item'][0] != 'exchange':
-                response.append(str("intent error"))
+                response.append(str("Thanks"))
+                self.episode_over = True
+                return random.choice(response)
             elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'country1':
                 response.append(str(self.goal.inform_slots['country1']))
             elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'country2':
@@ -125,11 +117,12 @@ class RuleSimulator(object):
                 response.append(str("The exchange rate between "+self.goal.inform_slots['country1']+" and "+self.goal.inform_slots['country2']+"."))
                 response.append(str(self.goal.inform_slots['country1']+" and "+self.goal.inform_slots['country2']+"."))
                 response.append(str("Between "+self.goal.inform_slots['country1'][0]+" and "+self.goal.inform_slots['country2'][0]+"."))
-            self.reward -= 2
             return random.choice(response)
-        elif self.goal.goal == 'Query':
+        elif self.goal.goal == 'query':
             if system_action['action_item'][0] != 'query':
-                response.append(str("intent error"))
+                response.append(str("Thanks"))
+                self.episode_over = True
+                return random.choice(response)
             elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'stock':
                 response.append(str(self.goal.inform_slots['company_name']))
                 response.append(str("the information of "+self.goal.inform_slots['company_name']+", please."))
@@ -138,11 +131,12 @@ class RuleSimulator(object):
             elif: len(system_action['slot']) == 2:
                 response.append(str("l'd like to see "+str(self.goal.inform_slots['date'])+"'s "+self.goal.inform_slots['company_name']+" stock price."))
                 response.append(str("Please show me "+str(self.goal.inform_slots['date'])+"'s "+self.goal.inform_slots['company_name']+" stock price."))
-            self.reward -= 2
             return random.choice(response)
-        elif self.goal.goal == 'Get_exchange_rate':
+        elif self.goal.goal == 'get_exchange_rate':
             if system_action['action_item'][0] != 'get_exchange_rate':
-                response.append(str("intent error"))
+                response.append(str("Thanks"))
+                self.episode_over = True
+                return random.choice(response)
             elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'Money_name':
                 response.append(str(self.goal.inform_slots['Money_name']))
                 response.append(str("To "+self.goal.inform_slots['Money_name']+"."))
@@ -152,11 +146,12 @@ class RuleSimulator(object):
             elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'types':
                 response.append(str(self.goal.inform_slots['type']+", please."))
                 response.append(str("with "+self.goal.inform_slots['action']+"."))
-            self.reward -= 2
             return random.choice(response)
         elif self.goal.goal == 'USDX':
             if system_action['action_item'][0] != 'USDX':
-                response.append(str("intent error"))
+                response.append(str("Thanks"))
+                self.episode_over = True
+                return random.choice(response)
             elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'time_start':
                 response.append(str(str(self.goal.inform_slots['time_start'])))
                 response.append(str("In "+str(self.goal.inform_slots['time_start'])+"."))
@@ -170,14 +165,25 @@ class RuleSimulator(object):
             elif len(system_action['slot']) == 2:
                 response.append("From "+str(goal.inform_slots['time_start'])+" to "+str(self.goal.inform_slots['time_end'])+".")
                 response.append("Between "+str(goal.inform_slots['time_start'])+" and "+str(self.goal.inform_slots['time_end'])+".")
-            self.reward -= 2
+
             return random.choice(response)
     def response_inform(self,system_action):
         pass
     def response_confirm_answer(self,system_action):
-        
-    
-
+        if system_action['action_item'][0] != self.goal.goal:
+            response = "Thanks"
+            self.episode_over = True
+            return response
+        for i in system_action['slot']:
+            if  self.goal.inform_slots.get(i) == None:
+                response = "Thanks"
+                self.episode_over = True
+                return response
+            elif self.goal.inform_slots.get(i) != system_action['slot'][i]
+                response = "No."
+                return response    
+        response = "Yes."
+        return response
 
 if __name__ == '__main__':
     r = RuleSimulator()
