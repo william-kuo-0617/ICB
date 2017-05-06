@@ -9,7 +9,7 @@ class RuleSimulator(object):
     def initialize_episode(self):
         self.episode_over = False
         self.success = False
-        self.goal = episode() #random generate a user goal
+        self.goal = episode(object) #random generate a user goal
         assert (self.episode_over != 1),' but we just started'
 
     def next(self, system_action):
@@ -21,9 +21,9 @@ class RuleSimulator(object):
         sys_act = system_action['system_action']
 
         nl_response = None
+
         if sys_act == "inform":
             nl_response = self.response_inform(system_action)
-        
         elif sys_act == "request":
             nl_response = self.response_request(system_action) 
         
@@ -43,15 +43,15 @@ class RuleSimulator(object):
             response.append(str("Thanks"))
             error = 1
         for i in system_action['slot']:
-            if self.goal.inform_slots.get(i) == None or self.goal.inform_slots.get(i) != system_aciton['slot'][i]
+            if self.goal.inform_slots.get(i) == None or self.goal.inform_slots.get(i) != system_aciton['slot'][i]:
                 response.append(str("Thanks"))
                 #response.append(str("slot error with "+i+" "+self.goal.inform_slots.get(i)+" "+system_aciton['slot'][i]"."))
                 error = 1
                 break
-        if error
+        if error:
             self.episode_over = True
             return random.choice(response)
-        else
+        else:
             self.success = True
             response.append(str("Thanks!"))
             return random.choice(response)
@@ -83,7 +83,7 @@ class RuleSimulator(object):
                 response.append(str("the information of "+self.goal.inform_slots['company_name']+", please."))
             elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'date':
                 response.append(str(str(self.goal.inform_slots['date'])+"'s")) 
-            elif: len(system_action['slot']) == 2:
+            elif len(system_action['slot']) == 2:
                 response.append(str("l'd like to see "+str(self.goal.inform_slots['date'])+"'s "+self.goal.inform_slots['company_name']+" stock price."))
                 response.append(str("Please show me "+str(self.goal.inform_slots['date'])+"'s "+self.goal.inform_slots['company_name']+" stock price."))
             return random.choice(response)
@@ -134,7 +134,7 @@ class RuleSimulator(object):
                 response = "Thanks"
                 self.episode_over = True
                 return response
-            elif self.goal.inform_slots.get(i) != system_action['slot'][i]
+            elif self.goal.inform_slots.get(i) != system_action['slot'][i]:
                 response = "No."
                 return response    
         response = "Yes."
