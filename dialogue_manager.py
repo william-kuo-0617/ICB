@@ -1,10 +1,10 @@
-from state import State
-from nn_model import NN
+# from state import State
+# from nn_model import NN
 from rule_simulator import RuleSimulator, initializer
-import tensorflow as tf
-from tensorflow.contrib import rnn
+# import tensorflow as tf
+# from tensorflow.contrib import rnn
 import numpy as np
-from w2v import DataPrepare
+# from w2v import DataPrepare
 import argparse
 import fileinput
 
@@ -14,7 +14,7 @@ def run_an_episode():
 	currturn = 0
 	maxturn = 12
 	#system
-	system = State()
+	# system = State()
 
 	#user
 	user = RuleSimulator()
@@ -23,7 +23,7 @@ def run_an_episode():
 	print('_ _ _ _ _ _ _ _ _ _ _ _')
 	over = user.episode_over
 	nl_input = initializer(user.goal)
-	turn_by_turn(currturn,nl_input,,)
+	turn_by_turn(currturn,nl_input,'user')
 	import pdb;pdb.set_trace()
 	config = tf.ConfigProto()
 	config.gpu_options.allow_growth = True
@@ -55,4 +55,4 @@ def run_an_episode():
 def turn_by_turn(currturn,turn,who):
 	print("turn{0} {1}:".format(currturn,who),turn)
 if __name__ == '__main__':
-	print (run_an_episode)
+	print (run_an_episode())
