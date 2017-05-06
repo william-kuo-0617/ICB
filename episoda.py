@@ -1,9 +1,9 @@
+from __future__ import print_function
 import random
 from datetime import date
 import requests
 import pandas as pd
 import json
-#from __future__ import print_function
 def initializer(episode1):
     init_temp = []
     if episode1.goal == 'exchange':
@@ -18,18 +18,18 @@ def initializer(episode1):
     elif episode1.goal == 'query':
         init_temp = ["Please give me the share price detail of "+episode1.inform_slots['symbol']+" "+str(episode1.inform_slots['date'])+"\n", "What is the close price of "+episode1.inform_slots['symbol']+" on "+str(episode1.inform_slots['date'])+"?\n", "I'd like to know the open and low price of "+episode1.inform_slots['symbol']+" on "+str(episode1.inform_slots['date'])+"\n"]
         init_temp.append(str("Give me "+str(episode1.inform_slots['date'])+"'s stock price"))
-        init_temp.append(str("the information of "+episode1.inform_slots['company_name']+", please"))
+        init_temp.append(str("the information of "+episode1.inform_slots['stock_name']+", please"))
         init_temp.append(str("I would like to see some stock information"))
         init_temp.append(str("Show me the stock price."))
-        init_temp.append(str("I would like to see "+str(episode1.inform_slots['date'])+"'s "+episode1.inform_slots['company_name']+" stock price"))
-        init_temp.append(str("Please show me "+str(episode1.inform_slots['date'])+"'s "+episode1.inform_slots['company_name']+" stock price."))
+        init_temp.append(str("I would like to see "+str(episode1.inform_slots['date'])+"'s "+episode1.inform_slots['stock_name']+" stock price"))
+        init_temp.append(str("Please show me "+str(episode1.inform_slots['date'])+"'s "+episode1.inform_slots['stock_name']+" stock price."))
         return random.choice(init_temp)
     elif episode1.goal == 'get_exchange_rate':
-        init_temp = ["what's the exchange rate of "+episode1.inform_slots['action']+" "+episode1.inform_slots['Money_name']+" by TWD now in bank with "+episode1.inform_slots['type']+"?\n", "I want to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['Money_name']+" with "+episode1.inform_slots['type']+"?\n"]
-        init_temp.append(str("I would like to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['Money_name']+"."))
-        init_temp.append(str("I'd like to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['Money_name']+"."))
-        init_temp.append(str("I want to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['Money_name']+"."))
-        init_temp.append(str("I want to exchange my "+episode1.inform_slots['Money_name']+"."))
+        init_temp = ["what's the exchange rate of "+episode1.inform_slots['action']+" "+episode1.inform_slots['money_name']+" by TWD now in bank with "+episode1.inform_slots['types']+"?\n", "I want to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['money_name']+" with "+episode1.inform_slots['types']+"?\n"]
+        init_temp.append(str("I would like to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['money_name']+"."))
+        init_temp.append(str("I'd like to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['money_name']+"."))
+        init_temp.append(str("I want to "+episode1.inform_slots['action']+" some "+episode1.inform_slots['money_name']+"."))
+        init_temp.append(str("I want to exchange my "+episode1.inform_slots['money_name']+"."))
         init_temp.append(str(""))
         return random.choice(init_temp)
     elif episode1.goal == 'USDX':
@@ -77,12 +77,12 @@ class episode(object):
         return tmp
 
     def dump(self):
-        print ("{goal:",self.goal,"};")
-        print("{inform_slots:")
+        print ("{\n\tgoal:\t",self.goal,',')
+        print("\tinform_slots:{")
         for key,val in self.inform_slots.items():
-            print("\t{0}: {1}".format(key,val))
-        print("};")
-        print ("{request_slot:\n","\t{0}:{1}\n".format(self.request_slots[0],self.request_slots[1]),"};")
+            print("\t\t{0}: {1},".format(key,val))
+        print("\t},")
+        print ("\trequest_slot: {","{0}:{1}".format(self.request_slots[0],self.request_slots[1]),"},\n},")
     def date_gen(self,start_date):
         start_date = self.start_date.toordinal() if self.start_date is not None else date.today().replace(day=1, month=1).toordinal()
         end_date = date.today().toordinal()
@@ -103,7 +103,7 @@ class episode(object):
     
     Money_name = [ 'USD', 'HKD', 'GBP', 'AUD', 'CAD', 'SGD', 'CHF', 'JPY', 'ZAR', 'SEK', 'NZD', 'THB', 'PHP', 'IDR', 'EUR', 'KRW', 'VND', 'MYR', 'CNY']
 
-    x = pd.read_csv('data/20170102/symbols.csv', delimiter = '\t', names = ['fuck', 'you'])
+    x = pd.read_csv('data/symbols.csv', delimiter = '\t', names = ['fuck', 'you'])
     company_name = x['you']
     symbol = x['fuck']
     field = ['date','open','high','low','close','volume','adj_close']     
@@ -121,6 +121,7 @@ class episode(object):
 
     #diaact
 if __name__ == '__main__':
-    episode1 = episode(object)
-    episode1.dump()
-    print(initializer(episode1))
+    for _ in range(100):
+        episode1 = episode(object)
+        episode1.dump()
+        print(initializer(episode1))
