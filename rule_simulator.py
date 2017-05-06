@@ -52,7 +52,7 @@ class RuleSimulator(object):
         
         
         ##get system action
-        #sys_act = system_action['diaact']
+        sys_act = system_action['system_action']
 
 
         # if (self.max_turn > 0 and self.state['turn'] > self.max_turn):
@@ -69,10 +69,12 @@ class RuleSimulator(object):
             self.response_multiple_choice(system_action)
         elif sys_act == "request":
             self.response_request(system_action) 
-        elif sys_act == "thanks":
+        elif sys_act == "closing":
             self.response_thanks(system_action)
         elif sys_act == "confirm_answer":
             self.response_confirm_answer(system_action)
+        elif sys_act == "response":
+            self.response_response(system_action)
         elif sys_act == "closing":
             self.episode_over = True
             self.state['diaact'] = "thanks"
@@ -90,18 +92,84 @@ class RuleSimulator(object):
         self.add_nl_to_action(response_action)                       
         return response_action, self.episode_over, self.dialog_status
 
-        
-
-    def response_thanks(self,system_action):
-        pass
+    def response_response(self, system_action):
+        response = []
+        error = 0
+        if system_action['action'][0] != self.goal.goal:
+            response.append(str("intent error"))
+            error = 1
+        for i in system_action['slot']:
+            if self.goal.inform_slots.get(i) == None or self.goal.inform_slots.get(i) != system_aciton['slot'][i]
+                response.append(str("slot error with "+i+" "+self.goal.inform_slots.get(i)+" "+system_aciton['slot'][i]"."))
+                error = 1
+                break
+        if error
+            return random.choice(response)
+        else
+            response.append(str"Thanks!")
+            return random.choice(response)
 
 
     def response_request(self,system_action):
-        pass
+        response = []
+        if self.goal.goal == 'Exchange':
+            if system_action['action_item'][0] != 'exchange':
+                response.append(str("intent error"))
+            elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'country1':
+                response.append(str(self.goal.inform_slots['country1']))
+            elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'country2':
+                response.append(str(self.goal.inform_slots['country2']))
+            elif len(system_action['slot']) == 2:
+                response.append(str("The exchange rate between "+self.goal.inform_slots['country1']+" and "+self.goal.inform_slots['country2']+"."))
+                response.append(str(self.goal.inform_slots['country1']+" and "+self.goal.inform_slots['country2']+"."))
+                response.append(str("Between "+self.goal.inform_slots['country1'][0]+" and "+self.goal.inform_slots['country2'][0]+"."))
+            return random.choice(response)
+        elif self.goal.goal == 'Query':
+            if system_action['action_item'][0] != 'query':
+                response.append(str("intent error"))
+            elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'stock':
+                response.append(str(self.goal.inform_slots['company_name']))
+                response.append(str("the information of "+self.goal.inform_slots['company_name']+", please."))
+            elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'date':
+                response.append(str(str(self.goal.inform_slots['date'])+"'s")) 
+            elif: len(system_action['slot']) == 2:
+                response.append(str("l'd like to see "+str(self.goal.inform_slots['date'])+"'s "+self.goal.inform_slots['company_name']+" stock price."))
+                response.append(str("Please show me "+str(self.goal.inform_slots['date'])+"'s "+self.goal.inform_slots['company_name']+" stock price."))
+            return random.choice(response)
+        elif self.goal.goal == 'Get_exchange_rate':
+            if system_action['action_item'][0] != 'get_exchange_rate':
+                response.append(str("intent error"))
+            elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'Money_name':
+                response.append(str(self.goal.inform_slots['Money_name']))
+                response.append(str("To "+self.goal.inform_slots['Money_name']+"."))
+            elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'action':
+                response.append(str("I want to "+self.goal.inform_slots['action']+" some."))
+                response.append(str("To "+self.goal.inform_slots['action']+" it."))
+            elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'types':
+                response.append(str(self.goal.inform_slots['type']+", please."))
+                response.append(str("with "+self.goal.inform_slots['action']+"."))
+            return random.choice(response)
+        elif self.goal.goal == 'USDX':
+            if system_action['action_item'][0] != 'USDX':
+                response.append(str("intent error"))
+            elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'time_start':
+                response.append(str(str(self.goal.inform_slots['time_start'])))
+                response.append(str("In "+str(self.goal.inform_slots['time_start'])+"."))
+                response.append(str("The time period starts in "+str(self.goal.inform_slots['time_start'])+"."))
+                response.append(str("Start in "+str(self.goal.inform_slots['time_start'])+"."))
+                return random.choice(response)
+            elif len(system_action['slot']) == 1 and system_action['slot'][0] == 'time_end':
+                response.append(str("In "+str(self.goal.inform_slots['time_end'])+"."))
+                response.append(str("The time period ends in "+str(self.goal.inform_slots['time_end'])+"."))
+                response.append(str("Ends in" +str(self.goal.inform_slots['time_end'])+"."))
+            elif len(system_action['slot']) == 2:
+                response.append("From "+str(goal.inform_slots['time_start'])+" to "+str(self.goal.inform_slots['time_end'])+".")
+                response.append("Between "+str(goal.inform_slots['time_start'])+" and "+str(self.goal.inform_slots['time_end'])+".")
+            return random.choice(response)
     def response_inform(self,system_action):
         pass
     def response_confirm_answer(self,system_action):
-        pass  
+        
     
 
 
