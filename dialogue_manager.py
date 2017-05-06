@@ -1,10 +1,10 @@
-# from state import State
-# from nn_model import NN
+from state import State
+from nn_model import NN
 from rule_simulator import RuleSimulator, initializer
-# import tensorflow as tf
-# from tensorflow.contrib import rnn
+import tensorflow as tf
+from tensorflow.contrib import rnn
 import numpy as np
-# from w2v import DataPrepare
+from w2v import DataPrepare
 import argparse
 import fileinput
 
@@ -14,7 +14,7 @@ def run_an_episode():
 	currturn = 0
 	maxturn = 12
 	#system
-	# system = State()
+	system = State()
 
 	#user
 	user = RuleSimulator()
