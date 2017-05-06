@@ -85,7 +85,7 @@ class episode(object):
         print ("\trequest_slot: {","{0}:{1}".format(self.request_slots[0],self.request_slots[1]),"},\n},")
     def date_gen(self,start_date):
         start_date = self.start_date.toordinal() if self.start_date is not None else date.today().replace(day=1, month=1).toordinal()
-        end_date = date.today().toordinal()
+        end_date = date(2017,3,31).toordinal()
         random_day = date.fromordinal(random.randint(start_date, end_date))
         return random_day
 # need real data 
@@ -103,7 +103,7 @@ class episode(object):
     
     Money_name = [ 'USD', 'HKD', 'GBP', 'AUD', 'CAD', 'SGD', 'CHF', 'JPY', 'ZAR', 'SEK', 'NZD', 'THB', 'PHP', 'IDR', 'EUR', 'KRW', 'VND', 'MYR', 'CNY']
 
-    x = pd.read_csv('data/symbols.csv', delimiter = '\t', names = ['fuck', 'you'])
+    x = pd.read_csv('../data/symbols.csv', delimiter = '\t', names = ['fuck', 'you'])
     company_name = x['you']
     symbol = x['fuck']
     field = ['date','open','high','low','close','volume','adj_close']     
