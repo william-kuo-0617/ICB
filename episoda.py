@@ -3,7 +3,7 @@ from datetime import date
 import requests
 import pandas as pd
 import json
-from bson import json_util
+#from bson import json_util
 #from __future__ import print_function
 def initializer(episode1):
     init_temp = []
@@ -82,7 +82,7 @@ class episode(object):
         tmp['goal'] = self.goal
         tmp['inform_slots'] = self.inform_slots
         tmp['request_slot'] = self.request_slot
-        json.dumps(tmp, default=json_util.default)
+        #json.dumps(tmp, default=json_util.default)
         # print("{goal:",self.goal,"};")
         # print("{inform_slots:")
         # for key,val in self.inform_slots.items():
